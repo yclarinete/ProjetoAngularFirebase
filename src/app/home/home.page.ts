@@ -11,7 +11,7 @@ import { MessageService } from '../services/message.service';
 })
 export class HomePage {
   pessoa = {
-    foto: 'https://i.pinimg.com/564x/5e/db/4f/5edb4f898cdbc44941326e598ac0c314.jpg',
+    foto: 'https://i.pinimg.com/736x/69/0a/39/690a39107dae875987fb0f0cbad83540.jpg',
     nome: 'clara',
     objetivo: 'programador',
     contato: {
