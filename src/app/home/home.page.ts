@@ -10,47 +10,70 @@ import { MessageService } from '../services/message.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  pessoa = {
-    foto: 'https://i.pinimg.com/736x/69/0a/39/690a39107dae875987fb0f0cbad83540.jpg',
-    nome: 'clara',
-    objetivo: 'programador',
-    contato: {
-      email: 'mcaclara07@gmail.com',
-      telefone: '(15) 99145-6913',
-      github: 'github.com/yclarinete',
-      linkedin: 'linkedin.com/yclarinete'
-    },
 
-    softskills: [
-      'comunicação',
-      'proatividade',
-      'trabalho em grupo'
-    ],
-
-    formacao: [
-      {
-        ano_inicio: '2022',
-        ano_fim: '2024',
-        instituicao: 'etec sales gomes',
-        curso: 'técnico desenvolvimento de sistemas'
-      },
-
-      {
-        ano_inicio: '2025',
-        ano_fim: '2027',
-        instituicao: 'fatec wilson roberto',
-        curso: 'superior em análise e desenvolvimento de sistemas'
-      }
-    ],
-
-    projeto: [
-      {
-        ano: '2023',
-        instituicao: 'etec sales gomes',
-        nome_projeto: 'etec de portas abertas',
-        descricao: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquam quas repellendus ducimus voluptatum omnis soluta ipsa itaque ipsum doloribus voluptas dolore labore tempore rerum quisquam at excepturi autem, amet totam!'
-      }
-    ]
+  usuario: any = {
+    email: null,
+    senha: null
   }
-  constructor(){ }
+
+  id: any;
+  
+  recado = {
+    id: null,
+    assunto: null,
+    mensagem: null
+  }
+
+  recados: any = [];
+
+  constructor(
+    public crudService: CrudService, 
+    public authService: AuthenticateService
+  ){}
+
+  enviar(){
+    this.crudService.insert(this.recado, 'recados');
+  }
+
+  carregar(){
+    this.recados = [];
+    this.crudService.fetchAll('recados')
+    .then((response) => {
+      console.log(response);
+      this.recados = response;
+    })
+
+    this.crudService.fetchAll('recados')
+    .catch((erro) => {
+      console.log(erro);
+    })
+
+    this.crudService.fetchAll('recados')
+    .finally(() => {
+      console.log('processo finalizado!');
+    })
+  }
+
+  remover(id: string){
+    this.crudService.remove(id, 'recados');
+    this.carregar();
+  }
+
+  selecionar (recado: any) {
+    this.id = recado.id;
+    this.recado = recado;
+  }
+
+  atualizar() {
+    this.crudService.update(this.id, this.recado, 'recados');
+  }
+
+  registrar() {
+    this.authService.register(this.usuario.email, this.usuario.senha);
+  }
+
+  login() {
+    this.authService.login(this.usuario.email, this.usuario.senha)
+  }
+  
 }
