@@ -10,70 +10,35 @@ import { MessageService } from '../services/message.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  isLoading: boolean = false;
+  funcionarios: any;
 
-  usuario: any = {
-    email: null,
-    senha: null
-  }
+  getFuncionarios(){
+    this.isLoading = true;
+	
+		let funcionario = { CodFun: '6' };
 
-  id: any;
-  
-  recado = {
-    id: null,
-    assunto: null,
-    mensagem: null
-  }
+    let funcionarios: any;
 
-  recados: any = [];
-
-  constructor(
-    public crudService: CrudService, 
-    public authService: AuthenticateService
-  ){}
-
-  enviar(){
-    this.crudService.insert(this.recado, 'recados');
-  }
-
-  carregar(){
-    this.recados = [];
-    this.crudService.fetchAll('recados')
-    .then((response) => {
-      console.log(response);
-      this.recados = response;
+    fetch('http://localhost/api/v1/listar_funcionarios.php',
+			{
+			  method: 'POST',
+			  headers: {
+			    'Content-Type': 'application/json',
+			  },
+			  body: JSON.stringify(funcionario)
+			}
+		)
+    .then(response => response.json())
+    .then(response => {
+      console.log(response.funcionarios);
+      this.funcionarios = response.funcionarios;
     })
-
-    this.crudService.fetchAll('recados')
-    .catch((erro) => {
+    .catch(erro => {
       console.log(erro);
     })
-
-    this.crudService.fetchAll('recados')
-    .finally(() => {
-      console.log('processo finalizado!');
+    .finally(()=>{
+      this.isLoading = false;
     })
   }
-
-  remover(id: string){
-    this.crudService.remove(id, 'recados');
-    this.carregar();
-  }
-
-  selecionar (recado: any) {
-    this.id = recado.id;
-    this.recado = recado;
-  }
-
-  atualizar() {
-    this.crudService.update(this.id, this.recado, 'recados');
-  }
-
-  registrar() {
-    this.authService.register(this.usuario.email, this.usuario.senha);
-  }
-
-  login() {
-    this.authService.login(this.usuario.email, this.usuario.senha)
-  }
-  
 }
